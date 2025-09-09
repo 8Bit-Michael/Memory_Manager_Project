@@ -7,7 +7,9 @@ def test_memory_initialization():
     assert manager.head.is_free is True
     assert manager.head.start == 0
     assert manager.head.next is None
-    if manager.head.memory_block == manager: # Confirming the linked list node points back to the MemoryManager instance.
-        print("Memory block correctly linked to MemoryManager instance, size of memory:", manager.head.size)
+    while manager.head:
+        print(f"Block Start: {manager.head.start}, Size: {manager.head.size}, Is Free: {manager.head.is_free}")
+        manager.head = manager.head.next
 
 test_memory_initialization()
+
