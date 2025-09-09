@@ -1,4 +1,4 @@
-# A Node class represnting each element in the linked list:
+#  A Node class represnting each element in the linked list:
 
 class Node: # Other nodes.
     def __init__(self, data):
@@ -14,11 +14,13 @@ class LinkedList:
     def append(self, data):
 
         if self.head is None: # The first node gets assigned as the head.
-            new_node = self.head
+            new_node = Node(data)
+            self.head = new_node
             return
         
     # Else/after a head is assigned
     #  keep traversing and appending new nodes.
+        new_node = Node(data)
         current = self.head
         while current.next: # While there is still a pointer (tails have none):
             current = current.next # Assign the data to the next node.
@@ -32,6 +34,7 @@ class LinkedList:
             current = current.next
         print("None") # By the time you reach the end there is no more pointer.
 
+    # Appending a node(but it goes to the back of the list)
     def prepend(self, data):
         new_node = Node(data)
         new_node.next = self.head
@@ -50,13 +53,23 @@ class LinkedList:
             self.head = current.next # Switch to the next node and make that the new head. 
             return
                 
-            prev = None # After cutting off the original head delete it. (Optional)
-        
-        # Case 3: Traverse the list to find the node val selected.
-        while current and current.next != key: # While there's a head and a node before it:
+        # Traverse the list to find the node to delete
+        while current and current.data != key: # While there's a head and the data doesn't match:
             prev = current # The previous node is now the head.
             current = current.next
 
+        # If the key was not found, do nothing
+        if not current:
+            return
+
         # Unlink the node from the list
-        prev.next = current.next
-    
+        if current:
+            prev.next = current.next
+
+test = LinkedList()
+test.prepend(3)
+test.prepend(2)
+test.prepend(5)
+test.append(7)
+test.display()
+test.delete(2)
