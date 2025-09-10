@@ -1,5 +1,4 @@
 from memory_manager import MemoryManager
-
 def test_memory_initialization():
     manager = MemoryManager(1024)
     assert manager.total_size == 1024
@@ -11,5 +10,8 @@ def test_memory_initialization():
         print(f"Block Start: {manager.head.start}, Size: {manager.head.size}, Is Free: {manager.head.is_free}")
         manager.head = manager.head.next
 
-test_memory_initialization()
+def test_allocation():
+    allocation_size = 300
+    # Somehow run the function in particular?
 
+test_memory_initialization()
