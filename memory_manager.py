@@ -1,46 +1,50 @@
 class MemoryBlock:
-    def __init__(self, start, size, is_free, next, memory_block):
+    def __init__(self, start, size, is_free, next_block, memory_block):
         self.start = start
         self.size = size
         self.is_free = is_free
-        self.next = None
+        self.next = next_block
         self.memory_block = memory_block
-
 
 class MemoryManager:
     def __init__(self, total_size):
         self.total_size = total_size
-        self.initialize_memory(total_size) # Initialize memory with a single large free block.
+        self.initialize_memory(total_size)
     
     def initialize_memory(self, total_size):
-        start = 0
-        size = total_size # Size = The size of the new block.
-        is_free = True
-        self.head = MemoryBlock(start, size, is_free, None, self) # The head of the linked list representing memory blocks.
-
-
-    def allocate(self, size): # Size = The size of code set aside for something.
+        self.head = MemoryBlock(0, total_size, True, None, self)
+    
+    def allocate(self, size):
         current = self.head
-        while current: # Make this 'traverse' somehow.
-            if current.next == True: # If there is a node/memory block pointer.
-                current = current.next # Switch from the head to the next block? Could be assigning the next as the head.
-                if self.current == True and self.size == size: # If there is a new current and it's equal to the requested size.
-                    self.current = size # Make the current node become the requested block size.
+        while current:
+            if current.is_free and current.size >= size:
+                if current.size == size:
+                    current.is_free = False
+                    return current.start
                 else:
-                    continue # Continue going through.
-            else:
-                return
+                    remaining_block = MemoryBlock(
+                        start=current.start + size,
+                        size=current.size - size,
+                        is_free=True,
+                        next_block=current.next,
+                        memory_block=self
+                    )
+                    current.size = size
+                    current.is_free = False
+                    current.next = remaining_block
+                    return current.start
+            current = current.next
+        print("Allocation failed: Not enough memory.")
+        return None
+    
+    def display_memory(self):
+        current = self.head
+        while current:
+            print(f"[Start: {current.start}, Size: {current.size}, Free: {current.is_free}]")
+            current = current.next
 
-        if self.size > size:
-            is_free = True
-            start = 0 # Start off with a value of 0? But zero is still a value?
-            head_1 = MemoryBlock(start, (size), is_free, None, self)
-            head_2 = MemoryBlock(start, (self.size - size), is_free, None, self)
     def free(self, address):
         pass
 
-    def merge_free_blocks(self):
-        pass
-
-    def display_memory(self):
+    def merge_free_blocks():
         pass
