@@ -43,8 +43,23 @@ class MemoryManager:
             print(f"[Start: {current.start}, Size: {current.size}, Free: {current.is_free}]")
             current = current.next
 
-    def free(self, address):
-        pass
+    def free(self, address): 
+        current = self.head
+        while current: # While there is another node pointed to:
+            if current == address: # If the node is equal to what the user is searching for:
+                current.is_free = True # The node is defined as free.
+            else:
+                current = current.next # Go to the next node if False.     
 
-    def merge_free_blocks():
-        pass
+    def merge_free_blocks(self):
+        free_space = [] # The list of free nodes
+        current = self.head # Start with the head as the current
+        while current: # While there is a node
+            if current.is_free: # If the current node has no data
+                free_space.append(current) # Append the node to the list of free_space?
+                if current.next: # If there is a pointer to another node
+                    current = current.next # Switch to that next node
+                else:
+                    pass # If there are other nodes in the free_space list add them? How do you add them and delete them?
+                    # Remove the leftover node  
+        
