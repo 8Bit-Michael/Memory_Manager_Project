@@ -7,7 +7,7 @@ while __name__ == "__main__":
     
     manager = MemoryManager(1024)
     while True:   
-        command = input("Enter command allocate <size>, free <address>, display, or exit:").strip().lower()
+        command = input("Enter command allocate <size>, free <address>, display, statistics or exit:").strip().lower()
         
         if command.startswith("allocate"): # If you chose to allocate
             try:
@@ -26,8 +26,8 @@ while __name__ == "__main__":
             try:
                 _, address_str = command.split() # Split the command into two parts
                 address = int(address_str) # Convert the address part to an integer
-                manager.free(address)
-                print(f"Freed memory at address {address}")
+                result = manager.free(address)
+                print(result)
 
             except (ValueError, IndexError):
                 print("Invalid command. Usage: free <address>")
@@ -35,11 +35,15 @@ while __name__ == "__main__":
         elif command == "display": # If you chose to display the results
             result = manager.display_memory()
             print(result)
+        
+        elif command == "statistics": # If you chose to display statistics
+            result = manager.get_statistics()
+            print(result)
 
         elif command == "exit": # If you chose to exit:
             print("Exiting memory manager.")
-            break
-
+            exit(0)
+            
         else:
             matched = match_input(command, ["allocate", "free", "display", "exit"])
             if matched:
