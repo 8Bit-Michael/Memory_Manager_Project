@@ -39,27 +39,51 @@ class MemoryManager:
     
     def display_memory(self):
         current = self.head
+        memory_status = []
+
         while current:
             print(f"[Start: {current.start}, Size: {current.size}, Free: {current.is_free}]")
+            memory_status.append((current.start, current.size, current.is_free))
             current = current.next
 
-    def free(self, address): 
+        allocated = sum(size for start, size, is_free in memory_status if not is_free)
+        free = sum(size for start, size, is_free in memory_status if is_free)
+
+        return f'[ALLOCATED: {allocated}] [FREE: {free}]'
+    
+    def get_statistics(self):
         current = self.head
-        while current: # While there is another node pointed to:
-            if current == address: # If the node is equal to what the user is searching for:
-                current.is_free = True # The node is defined as free.
+        allocated = 0 # Initialize allocated memory counter
+        free = 0 # Initialize free memory counter
+        while current:
+            if current.is_free:
+                free += current.size # Add to free memory if the block is free
             else:
-                current = current.next # Go to the next node if False.     
+                allocated += current.size # Add to allocated memory if the block is not free
+            current = current.next # Move to the next block
+        percent_allocated = (allocated / self.total_size) * 100 if self.total_size > 0 else 0
+        percent_free = (free / self.total_size) * 100 if self.total_size > 0 else 0
+        return f"Percent Allocated: {percent_allocated:.2f}%, Percent Free: {percent_free:.2f}%"
+
+
+    def free(self, address): # Before the issue was that if the address was invalid it would still traverse the linked list and print the success message, 
+        # but also the failure message, because on the one hand it didn't find the address, but on the other hand it was coded to always print the message.
+        current = self.head
+        while current: # Traverse the linked list
+            if address <= 0 or address >= self.total_size:
+                if current.start == address: 
+                    current.is_free = True
+                    self.merge_free_blocks() # Merge adjacent free blocks after freeing
+                    return f"Freed memory at address {address}" # Exit out of the loop once the block is found.
+                current = current.next # If the current block's start address doesn't match the given address, move to the next block.
+            else:
+                return "Free failed: Invalid address."
 
     def merge_free_blocks(self):
-        free_space = [] # The list of free nodes
-        current = self.head # Start with the head as the current
-        while current: # While there is a node
-            if current.is_free: # If the current node has no data
-                free_space.append(current) # Append the node to the list of free_space?
-                if current.next: # If there is a pointer to another node
-                    current = current.next # Switch to that next node
-                else:
-                    pass # If there are other nodes in the free_space list add them? How do you add them and delete them?
-                    # Remove the leftover node  
-        
+        current = self.head
+        while current and current.next: # Traverse the linked list
+            if current.is_free and current.next.is_free: # If both current and next blocks are free
+                current.size + current.next.size # Merge their size attributes
+                current.next = current.next.next # Skip over the next block
+            else: # Otherwise, just move to the next block
+                current = current.next
